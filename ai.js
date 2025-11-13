@@ -1,7 +1,15 @@
-// ai.js – Real Vision AI Product Detection
-import { client } from "https://esm.sh/@openai/openai@4.0.0";
+// ai.js - Frontend for product scanning
 
-// Main scanning function
+// Convert image file to Base64
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+    });
+}
+
 window.detectProduct = async function () {
     const fileInput = document.getElementById("imageInput");
     const scanResult = document.getElementById("scanResult");
@@ -11,44 +19,23 @@ window.detectProduct = async function () {
         return;
     }
 
-    const file = fileInput.files[0];
     scanResult.textContent = "⏳ Scanning product… Please wait.";
 
     try {
-        // Convert image to Base64
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
+        const file = fileInput.files[0];
+        const base64Image = await toBase64(file);
 
-        reader.onload = async () => {
-            const base64Image = reader.result;
+        // Send image to Vercel backend
+        const response = await fetch("/api/vision", {
+            method: "POST",
+            body: JSON.stringify({ image: base64Image }),
+        });
 
-            // Call OpenAI Vision
-            const response = await client.responses.create({
-                model: "gpt-4o-mini",
-                input: [
-                    {
-                        role: "user",
-                        content: [
-                            {
-                                type: "input_text",
-                                text: "Identify the product name from this picture. Reply with ONLY the product name."
-                            },
-                            {
-                                type: "input_image",
-                                image_url: base64Image
-                            }
-                        ]
-                    }
-                ]
-            });
+        const data = await response.json();
+        scanResult.textContent = "✅ Product detected: " + data.result;
 
-            let resultText =
-                response.output[0]?.content[0]?.text || "❌ Could not identify product.";
-
-            scanResult.textContent = "✅ Product detected: " + resultText;
-        };
     } catch (error) {
         console.error(error);
-        scanResult.textContent = "❌ Error scanning image.";
+        scanResult.textContent = "❌ Error scanning product.";
     }
 };
