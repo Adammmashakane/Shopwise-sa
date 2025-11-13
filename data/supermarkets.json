@@ -1,0 +1,76 @@
+{
+  "stores": [
+    "Shoprite",
+    "Checkers",
+    "Pick n Pay",
+    "Woolworths",
+    "Boxer"
+  ],
+
+  "products": [
+    {
+      "id": "p1",
+      "name": "Fresh Milk 2L",
+      "brand": "DairyBest",
+      "prices": {
+        "Shoprite": 22.99,
+        "Checkers": 24.50,
+        "Pick n Pay": 23.00,
+        "Woolworths": 25.00,
+        "Boxer": 21.50
+      }
+    },
+
+    {
+      "id": "p2",
+      "name": "Bananas (1kg)",
+      "brand": "FarmFresh",
+      "prices": {
+        "Shoprite": 12.99,
+        "Checkers": 13.50,
+        "Pick n Pay": 13.00,
+        "Woolworths": 14.00,
+        "Boxer": 12.50
+      }
+    },
+
+    {
+      "id": "p3",
+      "name": "Dog Food 2kg",
+      "brand": "PetCare",
+      "prices": {
+        "Shoprite": 89.99,
+        "Checkers": 92.00,
+        "Pick n Pay": 90.00,
+        "Woolworths": 95.00,
+        "Boxer": 88.00
+      }
+    },
+
+    {
+      "id": "p4",
+      "name": "Toothpaste 100ml",
+      "brand": "Smile",
+      "prices": {
+        "Shoprite": 18.50,
+        "Checkers": 19.00,
+        "Pick n Pay": 18.75,
+        "Woolworths": 20.00,
+        "Boxer": 17.99
+      }
+    },
+
+    {
+      "id": "p5",
+      "name": "Laundry Detergent 2kg",
+      "brand": "CleanMax",
+      "prices": {
+        "Shoprite": 79.99,
+        "Checkers": 82.00,
+        "Pick n Pay": 80.00,
+        "Woolworths": 85.00,
+        "Boxer": 78.50
+      }
+    }
+  ]
+}
