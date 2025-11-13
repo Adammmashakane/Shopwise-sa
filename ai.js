@@ -12,8 +12,7 @@ async function loadModel() {
   if (model || loading) return;
   loading = true;
   try {
-    // MobileNet v2 default settings - fast and small
-    model = await mobilenet.load({version: 2, alpha: 1.0});
+    model = await mobilenet.load({ version: 2, alpha: 1.0 });
     console.log("MobileNet loaded");
   } catch (err) {
     console.error("Failed to load MobileNet:", err);
@@ -22,21 +21,18 @@ async function loadModel() {
   }
 }
 
-// Call loadModel on import (starts downloading quietly)
 loadModel();
 
 /**
- * detectProduct - triggered by the Scan / Upload button
- * It reads the file input (first <input type="file"> on the page),
- * runs the model.classify(image), and writes results to #scanResult.
- * It will also populate the search box (#searchInput) with the top label and call searchProduct()
+ * detectProduct
+ * Called when the user taps "Scan Product"
  */
 export async function detectProduct() {
   const resultEl = document.getElementById("scanResult");
   const fileInput = document.querySelector("input[type=file]");
 
   if (!fileInput) {
-    alert("No file input found on page.");
+    alert("No file input found.");
     return;
   }
 
@@ -46,26 +42,23 @@ export async function detectProduct() {
     return;
   }
 
-  // Ensure model is loaded
   if (!model) {
-    resultEl.innerText = "Loading AI model — please wait a moment (may use data).";
+    resultEl.innerText = "Loading AI model… please wait.";
     await loadModel();
     if (!model) {
-      resultEl.innerText = "Failed to load model. Check your connection.";
+      resultEl.innerText = "Model failed to load.";
       return;
     }
   }
 
   resultEl.innerText = "Analyzing image…";
 
-  // Create an HTMLImageElement from the file (no upload to server)
   const url = URL.createObjectURL(file);
   const img = new Image();
   img.src = url;
 
   img.onload = async () => {
     try {
-      // classify returns an array of {className, probability}
       const predictions = await model.classify(img);
 
       if (!predictions || predictions.length === 0) {
@@ -74,26 +67,25 @@ export async function detectProduct() {
         return;
       }
 
-      // Show the top 3 labels
-      const topLabels = predictions.slice(0, 3)
-        .map(p => `${p.className} (${(p.probability*100).toFixed(1)}%)`)
+      const topLabels = predictions
+        .slice(0, 3)
+        .map(p => `${p.className} (${(p.probability * 100).toFixed(1)}%)`)
         .join("\n");
 
       resultEl.innerText = `Detected:\n${topLabels}`;
 
-      // Set search input to the top label (take first comma-separated token)
       const topLabel = predictions[0].className.split(",")[0].trim();
       const searchInput = document.getElementById("searchInput");
+
       if (searchInput) {
         searchInput.value = topLabel;
-        // call existing search function if present
+
         if (typeof window.searchProduct === "function") {
-          // small delay so UI updates
           setTimeout(() => window.searchProduct(), 150);
         }
       }
     } catch (err) {
-      console.error("Classification error", err);
+      console.error("AI error:", err);
       resultEl.innerText = "Error analyzing image.";
     } finally {
       URL.revokeObjectURL(url);
@@ -101,13 +93,10 @@ export async function detectProduct() {
   };
 
   img.onerror = () => {
-    resultEl.innerText = "Failed to load image file.";
+    resultEl.innerText = "Failed to read image.";
     URL.revokeObjectURL(url);
   };
 }
 
-// attach to window so existing HTML button can call detectProduct()
 window.detectProduct = detectProduct;
-
-// also expose loadModel so you can pre-warm the model from console if desired
 window.loadShopwiseModel = loadModel;
