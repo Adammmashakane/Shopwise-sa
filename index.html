@@ -4,68 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShopWise SA</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            text-align: center;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #2b7cff;
-        }
-
-        .container {
-            margin-top: 30px;
-        }
-
-        .btn {
-            display: block;
-            margin: 10px auto;
-            padding: 15px 20px;
-            width: 90%;
-            max-width: 300px;
-            font-size: 1.1rem;
-            border-radius: 10px;
-            border: none;
-            background: #2b7cff;
-            color: white;
-            cursor: pointer;
-        }
-
-        .btn-secondary {
-            background: #333;
-        }
-
-        input[type=file] {
-            margin: 20px auto;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <h1>ShopWise SA</h1>
-    <p>Version 1 — Product Scan, Search, Price Comparison & Shopping List</p>
+    <header>
+        <h1>ShopWise SA</h1>
+        <p>Shop Smarter, Save More 🇿🇦</p>
+    </header>
 
-    <div class="container">
+    <main>
 
-        <button class="btn">📸 Scan Product</button>
+        <!-- Upload / Scan Section -->
+        <section class="scan-section">
+            <h2>📸 Scan or Upload Product</h2>
+            <input type="file" id="imageInput" accept="image/*" capture="camera">
+            <button onclick="detectProduct()">Scan Product</button>
+            <p id="scanResult"></p>
+        </section>
 
-        <input type="file" accept="image/*">
+        <!-- Search Bar -->
+        <section class="search-section">
+            <h2>🔍 Search Products</h2>
+            <input type="text" id="searchInput" placeholder="Search for a product...">
+            <button onclick="searchProduct()">Search</button>
+            <p id="searchResult"></p>
+        </section>
 
-        <button class="btn btn-secondary">🔍 Search Product</button>
+        <!-- Supermarket Selector -->
+        <section class="market-section">
+            <h2>🛒 Choose Supermarkets</h2>
+            <select id="marketSelect">
+                <option>Shoprite</option>
+                <option>Checkers</option>
+                <option>Pick n Pay</option>
+                <option>Spar</option>
+                <option>Woolworths</option>
+                <option>Boxer</option>
+                <option>Makro</option>
+            </select>
+        </section>
 
-        <button class="btn">💰 Compare Prices</button>
+        <!-- Shopping List -->
+        <section class="list-section">
+            <h2>📝 Shopping List</h2>
+            <input type="text" id="itemInput" placeholder="Add item...">
+            <button onclick="addToList()">Add</button>
 
-        <button class="btn btn-secondary">📝 Shopping List</button>
+            <ul id="shoppingList"></ul>
+        </section>
 
-        <button class="btn">🏪 Choose Supermarket</button>
+    </main>
 
-    </div>
-<script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
