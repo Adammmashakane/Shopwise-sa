@@ -1,10 +1,10 @@
-// Vercel API Route – /api/vision.js
+// /api/vision.js – Vercel Serverless Function
 import OpenAI from "openai";
 
 export default async function handler(req, res) {
     try {
-        // Parse incoming JSON (Vercel uses req.body directly)
-        const { image } = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+        // Parse the incoming JSON
+        const { image } = JSON.parse(req.body);
 
         if (!image) {
             return res.status(400).json({ result: "No image received." });
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
             apiKey: process.env.OPENAI_API_KEY
         });
 
-        // Request vision analysis
+        // Send request to Vision Model
         const response = await client.responses.create({
             model: "gpt-4o-mini",
             input: [
@@ -35,6 +35,7 @@ export default async function handler(req, res) {
             ]
         });
 
+        // Extract text output
         const result =
             response.output?.[0]?.content?.[0]?.text ||
             "Could not identify product.";
@@ -45,4 +46,4 @@ export default async function handler(req, res) {
         console.error("Vision API Error:", error);
         return res.status(500).json({ result: "Error scanning product." });
     }
-            }
+}
