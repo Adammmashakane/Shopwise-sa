@@ -17,8 +17,7 @@ async function detectProduct() {
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
-    reader.onload = async () => {console.log("BASE64:", base64Image);
-
+    reader.onload = async () => {
         const base64Image = reader.result;
 
         try {
