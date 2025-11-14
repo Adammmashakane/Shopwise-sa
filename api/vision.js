@@ -4,7 +4,14 @@ import OpenAI from "openai";
 export default async function handler(req, res) {
     try {
         // Parse the incoming JSON
-        const { image } = JSON.parse(req.body);
+        let body = req.body;
+
+if (typeof body === "string") {
+    body = JSON.parse(body);
+}
+
+const image = body.image;
+
 
         if (!image) {
             return res.status(400).json({ result: "No image received." });
