@@ -1,78 +1,71 @@
-// Load supermarket prices
-let database = null;
+// script.js – Frontend logic for ShopWise SA
 
-async function loadDatabase() {
-    try {
-        const res = await fetch("data/supermarkets.json");
-        database = await res.json();
-        console.log("Database loaded:", database);
-    } catch (e) {
-        console.error("Database failed to load", e);
+// Detect Product (AI Vision)
+async function detectProduct() {
+    const fileInput = document.getElementById("imageInput");
+    const scanResult = document.getElementById("scanResult");
+
+    if (!fileInput.files.length) {
+        scanResult.textContent = "⚠️ Please upload an image first.";
+        return;
     }
+
+    const file = fileInput.files[0];
+    scanResult.textContent = "⏳ Scanning product… Please wait.";
+
+    // Convert uploaded image to Base64
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+        const base64Image = reader.result;
+
+        try {
+            // Send image to your Vercel API route
+            const response = await fetch("/api/vision", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image: base64Image })
+            });
+
+            const data = await response.json();
+
+            if (!data.result) {
+                scanResult.textContent = "❌ Could not identify this product.";
+                return;
+            }
+
+            scanResult.textContent = "✅ Product detected: " + data.result;
+        } catch (error) {
+            console.error("Scan Error:", error);
+            scanResult.textContent = "❌ Error scanning product.";
+        }
+    };
 }
 
-loadDatabase();
-
-// ========== PRODUCT SCAN / UPLOAD ==========
-function detectProduct() {
-    document.getElementById("scanResult").innerText =
-        "📸 AI product recognition coming in Version 2!";
-}
-
-// ========== SEARCH PRODUCT ==========
+// Search Product (basic)
 function searchProduct() {
-    const query = document.getElementById("searchInput").value.trim().toLowerCase();
-    const resultBox = document.getElementById("searchResult");
+    const input = document.getElementById("searchInput").value;
+    const result = document.getElementById("searchResult");
 
-    if (!query) {
-        resultBox.innerText = "Please enter a product name.";
+    if (!input.trim()) {
+        result.textContent = "⚠️ Please enter a product name.";
         return;
     }
 
-    if (!database) {
-        resultBox.innerText = "Loading database...";
-        return;
-    }
-
-    const matches = database.products.filter(product =>
-        product.name.toLowerCase().includes(query)
-    );
-
-    if (matches.length === 0) {
-        resultBox.innerText = "No matching products found.";
-        return;
-    }
-
-    let output = "🛒 Products found:\n\n";
-
-    matches.forEach(product => {
-        output += `${product.name} (${product.brand})\n`;
-        output += "Prices:\n";
-
-        database.stores.forEach(store => {
-            const price = product.prices[store];
-            output += `• ${store}: ${price ? "R " + price : "N/A"}\n`;
-        });
-
-        output += "\n";
-    });
-
-    resultBox.innerText = output;
+    result.textContent = "🔍 Searching for: " + input;
 }
 
-// ========== SHOPPING LIST ==========
-let shoppingList = [];
-
+// Add item to shopping list
 function addToList() {
-    const item = document.getElementById("itemInput").value.trim();
-    if (!item) return;
+    const itemInput = document.getElementById("itemInput");
+    const shoppingList = document.getElementById("shoppingList");
 
-    shoppingList.push(item);
+    if (!itemInput.value.trim()) return;
 
-    const listElement = document.getElementById("shoppingList");
     const li = document.createElement("li");
-    li.textContent = "• " + item;
-    listElement.appendChild(li);
+    li.textContent = itemInput.value;
+    shoppingList.appendChild(li);
 
-    document.getElementById("itemInput").value = "";
+    itemInput.value = "";
 }
