@@ -5,6 +5,7 @@ export default async function handler(req, res) {
     try {
         // Parse the incoming JSON
         let body = req.body;
+console.log("BODY RECEIVED:", body);
 
 if (typeof body === "string") {
     body = JSON.parse(body);
