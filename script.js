@@ -15,12 +15,11 @@ async function detectProduct() {
     const file = fileInput.files[0];
     scanResult.textContent = "🔍 Scanning product... Please wait.";
 
-    // Convert image → Base64
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
     reader.onload = async () => {
-        const base64Image = reader.result;
+        const base64Image = reader.result; // full Data URL
 
         try {
             const response = await fetch("/api/vision", {
@@ -31,19 +30,16 @@ async function detectProduct() {
 
             const data = await response.json();
 
-            if (data.result.startsWith("Error")) {
-                scanResult.textContent = "❌ " + data.result;
-            } else {
-                scanResult.textContent = "✅ Product detected: " + data.result;
-            }
+            scanResult.textContent = data.result.startsWith("Error")
+                ? "❌ " + data.result
+                : "✅ Product detected: " + data.result;
 
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
             scanResult.textContent = "❌ Error scanning product.";
         }
     };
 }
-
 
 
 // ======================
@@ -54,7 +50,7 @@ async function searchProduct() {
     const output = document.getElementById("searchResult");
 
     if (!input) {
-        output.textContent = "⚠️ Please enter a product name.";
+        output.textContent = "⚠️ Please type something.";
         return;
     }
 
@@ -68,7 +64,6 @@ async function searchProduct() {
         });
 
         const data = await response.json();
-
         output.textContent = "🔍 Result: " + data.result;
 
     } catch (err) {
