@@ -37,7 +37,11 @@ async function detectProduct() {
                 return;
             }
 
-            scanResult.textContent = "✅ Product Detected: " + data.result;
+            if (data.result.startsWith("Error")) {
+    scanResult.textContent = "❌ " + data.result;
+} else {
+    scanResult.textContent = "✅ Product detected: " + data.result;
+            }
         } catch (error) {
             console.error("Scan Error:", error);
             scanResult.textContent = "❌ Error scanning product.";
