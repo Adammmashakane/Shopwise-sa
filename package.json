@@ -1,9 +1,10 @@
 {
   "name": "shopwise-sa",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
-    "openai": "4.28.0"
+    "openai": "4.80.1"
   }
 }
