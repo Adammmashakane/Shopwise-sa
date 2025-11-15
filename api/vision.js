@@ -4,29 +4,27 @@ export default async function handler(req, res) {
   try {
     let body = req.body;
 
-    // Parse if raw text
     if (typeof body === "string") {
       body = JSON.parse(body);
     }
 
     const image = body.base64Image;
+
     if (!image) {
-      return res.status(400).json({ result: "No image received." });
+      return res.status(400).json({ result: "Error: No image received." });
     }
 
-    // Initialize OpenAI client
     const client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    // Send request to GPT-4o-mini Vision
     const response = await client.responses.create({
       model: "gpt-4o-mini",
       input: [
         {
           role: "user",
           content: [
-            { type: "input_text", text: "Identify the product brand and name ONLY." },
+            { type: "input_text", text: "Identify the product name and brand ONLY." },
             { type: "input_image", image_url: image }
           ]
         }
@@ -35,7 +33,7 @@ export default async function handler(req, res) {
 
     const result =
       response.output?.[0]?.content?.[0]?.text ||
-      "Could not identify product.";
+      "Error: Could not identify product.";
 
     return res.status(200).json({ result });
 
