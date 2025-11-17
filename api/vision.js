@@ -9,7 +9,8 @@ export default async function handler(req, res) {
       body = JSON.parse(body);
     }
 
-    const dataUrl = body.base64Image;
+    const image = body.base64Image;
+
 
     if (!dataUrl) {
       return res.status(400).json({ result: "Error: No image received." });
