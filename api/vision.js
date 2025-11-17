@@ -2,19 +2,17 @@ import OpenAI from "openai";
 
 export default async function handler(req, res) {
   try {
-    let body = req.body;
+   let body = req.body;
 
-    // Vercel sometimes sends body as string
-    if (typeof body === "string") {
-      body = JSON.parse(body);
-    }
+if (typeof body === "string") {
+  body = JSON.parse(body);
+}
 
-    const image = body.base64Image;
+const image = body.base64Image;
 
-
-    if (!dataUrl) {
-      return res.status(400).json({ result: "Error: No image received." });
-    }
+if (!image) {
+  return res.status(400).json({ result: "No image received." });
+}
 
     // Extract REAL base64 (remove "data:image/...;base64,")
     const base64 = dataUrl.split(",")[1];
